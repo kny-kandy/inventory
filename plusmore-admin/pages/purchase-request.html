@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlusMore Admin - 발주 요청</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>PlusMore Admin</h2>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>대시보드</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>발주 내역</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="product-list.html" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        <span>상품목록</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="purchase-request.html" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>발주 요청</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-orders.html" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>발주목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="sales-collection.html" class="nav-link">
+                        <i class="fas fa-store"></i>
+                        <span>판매처 주문수집</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="order-list.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>주문목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="invoice-reply.html" class="nav-link">
+                        <i class="fas fa-reply"></i>
+                        <span>송장번호 회신</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="matching-manager.html" class="nav-link">
+                        <i class="fas fa-link"></i>
+                        <span>매칭 관리</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="stock-list.html" class="nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>재고목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="location-manager.html" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>로케이션 관리</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>발주 요청</h1>
+                    <nav class="breadcrumb"></nav>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name">관리자</span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Form Section -->
+                <div class="form-section">
+                    <div class="form-header">
+                        <h3>새 발주 요청</h3>
+                        <p>발주할 상품 정보를 입력해주세요.</p>
+                    </div>
+                    
+                    <form id="purchaseRequestForm" class="purchase-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="supplier">공급업체 *</label>
+                                <select id="supplier" name="supplier" class="form-control" required>
+                                    <option value="">공급업체를 선택하세요</option>
+                                    <option value="supplier1">공급업체 A</option>
+                                    <option value="supplier2">공급업체 B</option>
+                                    <option value="supplier3">공급업체 C</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="requestDate">요청일 *</label>
+                                <input type="date" id="requestDate" name="requestDate" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expectedDate">예상 배송일</label>
+                                <input type="date" id="expectedDate" name="expectedDate" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="priority">우선순위</label>
+                                <select id="priority" name="priority" class="form-control">
+                                    <option value="low">낮음</option>
+                                    <option value="medium" selected>보통</option>
+                                    <option value="high">높음</option>
+                                    <option value="urgent">긴급</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="notes">메모</label>
+                            <textarea id="notes" name="notes" class="form-control" rows="3" placeholder="발주 관련 메모를 입력하세요..."></textarea>
+                        </div>
+                        
+                        <!-- Product Items Section -->
+                        <div class="product-items-section">
+                            <div class="section-header">
+                                <h4>상품 목록</h4>
+                                <button type="button" class="btn btn-secondary" id="addProductItem">
+                                    <i class="fas fa-plus"></i> 상품 추가
+                                </button>
+                            </div>
+                            
+                            <div id="productItems" class="product-items">
+                                <div class="product-item" data-item="0">
+                                    <div class="item-row">
+                                        <div class="form-group">
+                                            <label>상품 *</label>
+                                            <select name="products[0][productId]" class="form-control product-select" required>
+                                                <option value="">상품을 선택하세요</option>
+                                                <option value="P001">스마트폰 A</option>
+                                                <option value="P002">노트북 B</option>
+                                                <option value="P003">티셔츠 C</option>
+                                                <option value="P004">책 D</option>
+                                                <option value="P005">가전제품 E</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>수량 *</label>
+                                            <input type="number" name="products[0][quantity]" class="form-control quantity-input" min="1" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>단가</label>
+                                            <input type="number" name="products[0][unitPrice]" class="form-control price-input" min="0" step="1000">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>총액</label>
+                                            <input type="text" class="form-control total-amount" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>&nbsp;</label>
+                                            <button type="button" class="btn btn-danger remove-item">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Summary Section -->
+                        <div class="summary-section">
+                            <div class="summary-row">
+                                <span>총 상품 수:</span>
+                                <span id="totalItems">1</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>총 수량:</span>
+                                <span id="totalQuantity">0</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>총 금액:</span>
+                                <span id="totalAmount">₩0</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> 발주 요청
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="saveDraft">
+                                <i class="fas fa-save"></i> 임시저장
+                            </button>
+                            <button type="reset" class="btn btn-outline">
+                                <i class="fas fa-undo"></i> 초기화
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/components.js"></script>
+    <script>
+        let itemCounter = 1;
+        
+        // Set default date to today
+        document.getElementById('requestDate').value = new Date().toISOString().split('T')[0];
+        
+        // Add product item
+        document.getElementById('addProductItem').addEventListener('click', function() {
+            const productItems = document.getElementById('productItems');
+            const newItem = document.createElement('div');
+            newItem.className = 'product-item';
+            newItem.setAttribute('data-item', itemCounter);
+            
+            newItem.innerHTML = `
+                <div class="item-row">
+                    <div class="form-group">
+                        <label>상품 *</label>
+                        <select name="products[${itemCounter}][productId]" class="form-control product-select" required>
+                            <option value="">상품을 선택하세요</option>
+                            <option value="P001">스마트폰 A</option>
+                            <option value="P002">노트북 B</option>
+                            <option value="P003">티셔츠 C</option>
+                            <option value="P004">책 D</option>
+                            <option value="P005">가전제품 E</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>수량 *</label>
+                        <input type="number" name="products[${itemCounter}][quantity]" class="form-control quantity-input" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>단가</label>
+                        <input type="number" name="products[${itemCounter}][unitPrice]" class="form-control price-input" min="0" step="1000">
+                    </div>
+                    <div class="form-group">
+                        <label>총액</label>
+                        <input type="text" class="form-control total-amount" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button type="button" class="btn btn-danger remove-item">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            productItems.appendChild(newItem);
+            itemCounter++;
+            updateSummary();
+        });
+        
+        // Remove product item
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-item') || e.target.closest('.remove-item')) {
+                const item = e.target.closest('.product-item');
+                if (document.querySelectorAll('.product-item').length > 1) {
+                    item.remove();
+                    updateSummary();
+                }
+            }
+        });
+        
+        // Calculate totals
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('quantity-input') || e.target.classList.contains('price-input')) {
+                calculateItemTotal(e.target);
+                updateSummary();
+            }
+        });
+        
+        function calculateItemTotal(input) {
+            const item = input.closest('.product-item');
+            const quantity = item.querySelector('.quantity-input').value || 0;
+            const price = item.querySelector('.price-input').value || 0;
+            const total = quantity * price;
+            
+            item.querySelector('.total-amount').value = total.toLocaleString() + '원';
+        }
+        
+        function updateSummary() {
+            const items = document.querySelectorAll('.product-item');
+            const totalItems = items.length;
+            let totalQuantity = 0;
+            let totalAmount = 0;
+            
+            items.forEach(item => {
+                const quantity = parseInt(item.querySelector('.quantity-input').value) || 0;
+                const price = parseInt(item.querySelector('.price-input').value) || 0;
+                totalQuantity += quantity;
+                totalAmount += quantity * price;
+            });
+            
+            document.getElementById('totalItems').textContent = totalItems;
+            document.getElementById('totalQuantity').textContent = totalQuantity;
+            document.getElementById('totalAmount').textContent = '₩' + totalAmount.toLocaleString();
+        }
+        
+        // Form submission
+        document.getElementById('purchaseRequestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (this.checkValidity()) {
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData);
+                
+                console.log('Submitting purchase request:', data);
+                
+                // Show success message
+                if (window.plusMoreAdmin) {
+                    window.plusMoreAdmin.showNotification('발주 요청이 성공적으로 제출되었습니다.', 'success');
+                }
+                
+                // Reset form
+                this.reset();
+                document.getElementById('requestDate').value = new Date().toISOString().split('T')[0];
+                
+                // Reset product items
+                const productItems = document.getElementById('productItems');
+                productItems.innerHTML = productItems.children[0].outerHTML;
+                itemCounter = 1;
+                updateSummary();
+            } else {
+                console.log('Form validation failed');
+            }
+        });
+        
+        // Save draft
+        document.getElementById('saveDraft').addEventListener('click', function() {
+            const formData = new FormData(document.getElementById('purchaseRequestForm'));
+            const data = Object.fromEntries(formData);
+            
+            // Save to localStorage
+            localStorage.setItem('purchaseRequestDraft', JSON.stringify(data));
+            
+            if (window.plusMoreAdmin) {
+                window.plusMoreAdmin.showNotification('임시저장되었습니다.', 'info');
+            }
+        });
+        
+        // Load draft on page load
+        window.addEventListener('load', function() {
+            const draft = localStorage.getItem('purchaseRequestDraft');
+            if (draft) {
+                const data = JSON.parse(draft);
+                // Populate form with draft data
+                console.log('Loading draft:', data);
+            }
+        });
+    </script>
+</body>
+</html> 

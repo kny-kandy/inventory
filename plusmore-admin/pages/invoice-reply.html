@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlusMore Admin - 송장번호 회신</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>PlusMore Admin</h2>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>대시보드</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>발주 내역</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="product-list.html" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        <span>상품목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-request.html" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>발주 요청</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-orders.html" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>발주목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="sales-collection.html" class="nav-link">
+                        <i class="fas fa-store"></i>
+                        <span>판매처 주문수집</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="order-list.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>주문목록</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="invoice-reply.html" class="nav-link">
+                        <i class="fas fa-reply"></i>
+                        <span>송장번호 회신</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="matching-manager.html" class="nav-link">
+                        <i class="fas fa-link"></i>
+                        <span>매칭 관리</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="stock-list.html" class="nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>재고목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="location-manager.html" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>로케이션 관리</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>송장번호 회신</h1>
+                    <nav class="breadcrumb"></nav>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name">관리자</span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+            <div class="page-content">
+                <div class="action-bar">
+                    <button class="btn btn-primary" id="bulkReply">
+                        <i class="fas fa-reply"></i> 일괄 회신
+                    </button>
+                    <button class="btn btn-secondary" id="exportInvoices">
+                        <i class="fas fa-download"></i> 내보내기
+                    </button>
+                </div>
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label for="statusFilter">상태</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">전체</option>
+                            <option value="pending">대기중</option>
+                            <option value="replied">회신완료</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="dateFrom">시작일</label>
+                        <input type="date" id="dateFrom" class="form-control">
+                    </div>
+                    <div class="filter-group">
+                        <label for="dateTo">종료일</label>
+                        <input type="date" id="dateTo" class="form-control">
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="applyFilters">
+                            <i class="fas fa-search"></i> 검색
+                        </button>
+                        <button class="btn btn-secondary" id="resetFilters">
+                            <i class="fas fa-undo"></i> 초기화
+                        </button>
+                    </div>
+                </div>
+                <div class="data-table-section">
+                    <div class="table-header">
+                        <h3>송장번호 회신 목록</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" id="refreshInvoices">
+                                <i class="fas fa-sync-alt"></i> 새로고침
+                            </button>
+                        </div>
+                    </div>
+                    <div id="invoiceTable" data-component="DataTable" data-config='{
+                        "columns": [
+                            {"key": "orderId", "label": "주문번호", "sortable": true},
+                            {"key": "customer", "label": "고객명", "sortable": true},
+                            {"key": "channel", "label": "판매처", "sortable": true},
+                            {"key": "invoiceNo", "label": "송장번호", "sortable": true},
+                            {"key": "status", "label": "상태", "sortable": true, "formatter": "invoiceStatusFormatter"},
+                            {"key": "replyDate", "label": "회신일", "type": "date", "sortable": true},
+                            {"key": "actions", "label": "작업", "sortable": false, "formatter": "invoiceActionsFormatter"}
+                        ],
+                        "data": [
+                            {"orderId": "ORD-2024-001", "customer": "김철수", "channel": "쿠팡", "invoiceNo": "1234567890", "status": "pending", "replyDate": ""},
+                            {"orderId": "ORD-2024-002", "customer": "이영희", "channel": "11번가", "invoiceNo": "", "status": "pending", "replyDate": ""},
+                            {"orderId": "ORD-2024-003", "customer": "박민수", "channel": "G마켓", "invoiceNo": "9876543210", "status": "replied", "replyDate": "2024-01-20"}
+                        ],
+                        "pageSize": 10,
+                        "searchable": true
+                    }'></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../js/main.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/components.js"></script>
+    <script>
+        function invoiceStatusFormatter(status) {
+            const statusMap = {
+                'pending': '<span class="status-badge pending">대기중</span>',
+                'replied': '<span class="status-badge replied">회신완료</span>'
+            };
+            return statusMap[status] || status;
+        }
+        function invoiceActionsFormatter(value, row) {
+            return `
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-primary" onclick="replyInvoice('${row.orderId}')" title="회신">
+                        <i class="fas fa-reply"></i>
+                    </button>
+                </div>
+            `;
+        }
+        function replyInvoice(orderId) {
+            const invoiceNo = prompt('송장번호를 입력하세요:');
+            if (invoiceNo) {
+                console.log('Reply invoice:', orderId, invoiceNo);
+                if (window.plusMoreAdmin) {
+                    window.plusMoreAdmin.showNotification('송장번호가 회신되었습니다.', 'success');
+                }
+            }
+        }
+        document.getElementById('bulkReply').addEventListener('click', function() {
+            if (confirm('선택된 주문에 대해 일괄 회신하시겠습니까?')) {
+                console.log('Bulk reply invoices');
+                if (window.plusMoreAdmin) {
+                    window.plusMoreAdmin.showNotification('일괄 회신이 완료되었습니다.', 'success');
+                }
+            }
+        });
+        document.getElementById('exportInvoices').addEventListener('click', function() {
+            console.log('Exporting invoices...');
+        });
+        document.getElementById('refreshInvoices').addEventListener('click', function() {
+            console.log('Refreshing invoices...');
+        });
+        document.getElementById('applyFilters').addEventListener('click', function() {
+            const status = document.getElementById('statusFilter').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            console.log('Applying filters:', { status, dateFrom, dateTo });
+        });
+        document.getElementById('resetFilters').addEventListener('click', function() {
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            console.log('Resetting filters');
+        });
+    </script>
+</body>
+</html> 

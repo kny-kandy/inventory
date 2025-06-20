@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlusMore Admin - 발주 내역</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>PlusMore Admin</h2>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>대시보드</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="purchase-history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>발주 내역</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="product-list.html" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        <span>상품목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-request.html" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>발주 요청</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-orders.html" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>발주목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="sales-collection.html" class="nav-link">
+                        <i class="fas fa-store"></i>
+                        <span>판매처 주문수집</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="order-list.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>주문목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="invoice-reply.html" class="nav-link">
+                        <i class="fas fa-reply"></i>
+                        <span>송장번호 회신</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="matching-manager.html" class="nav-link">
+                        <i class="fas fa-link"></i>
+                        <span>매칭 관리</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="stock-list.html" class="nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>재고목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="location-manager.html" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>로케이션 관리</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>발주 내역</h1>
+                    <nav class="breadcrumb"></nav>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name">관리자</span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Filters -->
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label for="dateFrom">시작일</label>
+                        <input type="date" id="dateFrom" class="form-control">
+                    </div>
+                    <div class="filter-group">
+                        <label for="dateTo">종료일</label>
+                        <input type="date" id="dateTo" class="form-control">
+                    </div>
+                    <div class="filter-group">
+                        <label for="statusFilter">상태</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">전체</option>
+                            <option value="pending">대기중</option>
+                            <option value="processing">처리중</option>
+                            <option value="completed">완료</option>
+                            <option value="cancelled">취소</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="supplierFilter">공급업체</label>
+                        <select id="supplierFilter" class="form-control">
+                            <option value="">전체</option>
+                            <option value="supplier1">공급업체 A</option>
+                            <option value="supplier2">공급업체 B</option>
+                            <option value="supplier3">공급업체 C</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="applyFilters">
+                            <i class="fas fa-search"></i> 검색
+                        </button>
+                        <button class="btn btn-secondary" id="resetFilters">
+                            <i class="fas fa-undo"></i> 초기화
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>총 발주</h3>
+                            <p class="stat-number">1,234</p>
+                            <span class="stat-change positive">+15.2%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>대기중</h3>
+                            <p class="stat-number">45</p>
+                            <span class="stat-change negative">-8.3%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>완료</h3>
+                            <p class="stat-number">1,189</p>
+                            <span class="stat-change positive">+12.7%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>총 금액</h3>
+                            <p class="stat-number">₩89,456,789</p>
+                            <span class="stat-change positive">+18.9%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="data-table-section">
+                    <div class="table-header">
+                        <h3>발주 내역 목록</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" id="exportData">
+                                <i class="fas fa-download"></i> 내보내기
+                            </button>
+                            <button class="btn btn-secondary" id="printData">
+                                <i class="fas fa-print"></i> 인쇄
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="purchaseHistoryTable" data-component="DataTable" data-config='{
+                        "columns": [
+                            {"key": "id", "label": "발주번호", "sortable": true},
+                            {"key": "date", "label": "발주일", "type": "date", "sortable": true},
+                            {"key": "supplier", "label": "공급업체", "sortable": true},
+                            {"key": "product", "label": "상품명", "sortable": true},
+                            {"key": "quantity", "label": "수량", "sortable": true},
+                            {"key": "unitPrice", "label": "단가", "type": "currency", "sortable": true},
+                            {"key": "totalAmount", "label": "총액", "type": "currency", "sortable": true},
+                            {"key": "status", "label": "상태", "sortable": true, "formatter": "statusFormatter"},
+                            {"key": "actions", "label": "작업", "sortable": false, "formatter": "actionsFormatter"}
+                        ],
+                        "data": [
+                            {"id": "PO-2024-001", "date": "2024-01-15", "supplier": "공급업체 A", "product": "상품 A", "quantity": 100, "unitPrice": 15000, "totalAmount": 1500000, "status": "completed"},
+                            {"id": "PO-2024-002", "date": "2024-01-16", "supplier": "공급업체 B", "product": "상품 B", "quantity": 50, "unitPrice": 25000, "totalAmount": 1250000, "status": "processing"},
+                            {"id": "PO-2024-003", "date": "2024-01-17", "supplier": "공급업체 C", "product": "상품 C", "quantity": 75, "unitPrice": 18000, "totalAmount": 1350000, "status": "pending"},
+                            {"id": "PO-2024-004", "date": "2024-01-18", "supplier": "공급업체 A", "product": "상품 D", "quantity": 200, "unitPrice": 12000, "totalAmount": 2400000, "status": "completed"},
+                            {"id": "PO-2024-005", "date": "2024-01-19", "supplier": "공급업체 B", "product": "상품 E", "quantity": 30, "unitPrice": 35000, "totalAmount": 1050000, "status": "cancelled"}
+                        ],
+                        "pageSize": 10,
+                        "searchable": true
+                    }'></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/components.js"></script>
+    <script>
+        // Custom formatters for the data table
+        function statusFormatter(status) {
+            const statusMap = {
+                'pending': '<span class="status-badge pending">대기중</span>',
+                'processing': '<span class="status-badge processing">처리중</span>',
+                'completed': '<span class="status-badge completed">완료</span>',
+                'cancelled': '<span class="status-badge cancelled">취소</span>'
+            };
+            return statusMap[status] || status;
+        }
+
+        function actionsFormatter(value, row) {
+            return `
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-primary" onclick="viewPurchase('${row.id}')" title="상세보기">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="editPurchase('${row.id}')" title="수정">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deletePurchase('${row.id}')" title="삭제">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        // Action functions
+        function viewPurchase(id) {
+            console.log('View purchase:', id);
+            // Implement view functionality
+        }
+
+        function editPurchase(id) {
+            console.log('Edit purchase:', id);
+            // Implement edit functionality
+        }
+
+        function deletePurchase(id) {
+            if (confirm('정말로 이 발주를 삭제하시겠습니까?')) {
+                console.log('Delete purchase:', id);
+                // Implement delete functionality
+            }
+        }
+
+        // Filter functionality
+        document.getElementById('applyFilters').addEventListener('click', function() {
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            const status = document.getElementById('statusFilter').value;
+            const supplier = document.getElementById('supplierFilter').value;
+            
+            // Apply filters to the data table
+            console.log('Applying filters:', { dateFrom, dateTo, status, supplier });
+        });
+
+        document.getElementById('resetFilters').addEventListener('click', function() {
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('supplierFilter').value = '';
+            
+            // Reset data table
+            console.log('Resetting filters');
+        });
+
+        // Export functionality
+        document.getElementById('exportData').addEventListener('click', function() {
+            console.log('Exporting data...');
+            // Implement export functionality
+        });
+
+        // Print functionality
+        document.getElementById('printData').addEventListener('click', function() {
+            window.print();
+        });
+    </script>
+</body>
+</html> 

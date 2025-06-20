@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlusMore Admin - 주문목록</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>PlusMore Admin</h2>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>대시보드</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>발주 내역</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="product-list.html" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        <span>상품목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-request.html" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>발주 요청</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-orders.html" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>발주목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="sales-collection.html" class="nav-link">
+                        <i class="fas fa-store"></i>
+                        <span>판매처 주문수집</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="order-list.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>주문목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="invoice-reply.html" class="nav-link">
+                        <i class="fas fa-reply"></i>
+                        <span>송장번호 회신</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="matching-manager.html" class="nav-link">
+                        <i class="fas fa-link"></i>
+                        <span>매칭 관리</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="stock-list.html" class="nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>재고목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="location-manager.html" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>로케이션 관리</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>주문목록</h1>
+                    <nav class="breadcrumb"></nav>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name">관리자</span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Action Buttons -->
+                <div class="action-bar">
+                    <button class="btn btn-primary" id="processOrders">
+                        <i class="fas fa-cog"></i> 주문 처리
+                    </button>
+                    <button class="btn btn-secondary" id="bulkShip">
+                        <i class="fas fa-truck"></i> 일괄 배송
+                    </button>
+                    <button class="btn btn-secondary" id="exportOrders">
+                        <i class="fas fa-download"></i> 내보내기
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label for="orderStatus">주문 상태</label>
+                        <select id="orderStatus" class="form-control">
+                            <option value="">전체</option>
+                            <option value="pending">대기중</option>
+                            <option value="processing">처리중</option>
+                            <option value="shipped">배송됨</option>
+                            <option value="delivered">배송완료</option>
+                            <option value="cancelled">취소됨</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="salesChannel">판매처</label>
+                        <select id="salesChannel" class="form-control">
+                            <option value="">전체</option>
+                            <option value="coupang">쿠팡</option>
+                            <option value="11st">11번가</option>
+                            <option value="gmarket">G마켓</option>
+                            <option value="auction">옥션</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="dateFrom">시작일</label>
+                        <input type="date" id="dateFrom" class="form-control">
+                    </div>
+                    <div class="filter-group">
+                        <label for="dateTo">종료일</label>
+                        <input type="date" id="dateTo" class="form-control">
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="applyFilters">
+                            <i class="fas fa-search"></i> 검색
+                        </button>
+                        <button class="btn btn-secondary" id="resetFilters">
+                            <i class="fas fa-undo"></i> 초기화
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>대기중</h3>
+                            <p class="stat-number">67</p>
+                            <span class="stat-change negative">+12.5%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>처리중</h3>
+                            <p class="stat-number">34</p>
+                            <span class="stat-change positive">+8.3%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>배송중</h3>
+                            <p class="stat-number">89</p>
+                            <span class="stat-change positive">+15.7%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>완료</h3>
+                            <p class="stat-number">1,234</p>
+                            <span class="stat-change positive">+18.9%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="data-table-section">
+                    <div class="table-header">
+                        <h3>주문 목록</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" id="refreshOrders">
+                                <i class="fas fa-sync-alt"></i> 새로고침
+                            </button>
+                            <button class="btn btn-secondary" id="printOrders">
+                                <i class="fas fa-print"></i> 인쇄
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="orderTable" data-component="DataTable" data-config='{
+                        "columns": [
+                            {"key": "orderId", "label": "주문번호", "sortable": true},
+                            {"key": "orderDate", "label": "주문일", "type": "date", "sortable": true},
+                            {"key": "customer", "label": "고객명", "sortable": true},
+                            {"key": "channel", "label": "판매처", "sortable": true},
+                            {"key": "products", "label": "상품", "sortable": false},
+                            {"key": "totalAmount", "label": "총액", "type": "currency", "sortable": true},
+                            {"key": "status", "label": "상태", "sortable": true, "formatter": "orderStatusFormatter"},
+                            {"key": "actions", "label": "작업", "sortable": false, "formatter": "orderActionsFormatter"}
+                        ],
+                        "data": [
+                            {"orderId": "ORD-2024-001", "orderDate": "2024-01-20", "customer": "김철수", "channel": "쿠팡", "products": "스마트폰 A x1", "totalAmount": 500000, "status": "pending"},
+                            {"orderId": "ORD-2024-002", "orderDate": "2024-01-20", "customer": "이영희", "channel": "11번가", "products": "노트북 B x1, 마우스 x1", "totalAmount": 1250000, "status": "processing"},
+                            {"orderId": "ORD-2024-003", "orderDate": "2024-01-19", "customer": "박민수", "channel": "G마켓", "products": "티셔츠 C x2", "totalAmount": 50000, "status": "shipped"},
+                            {"orderId": "ORD-2024-004", "orderDate": "2024-01-19", "customer": "최지영", "channel": "쿠팡", "products": "책 D x3", "totalAmount": 45000, "status": "delivered"},
+                            {"orderId": "ORD-2024-005", "orderDate": "2024-01-18", "customer": "정수민", "channel": "옥션", "products": "가전제품 E x1", "totalAmount": 300000, "status": "cancelled"}
+                        ],
+                        "pageSize": 10,
+                        "searchable": true
+                    }'></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/components.js"></script>
+    <script>
+        // Custom formatters for the order table
+        function orderStatusFormatter(status) {
+            const statusMap = {
+                'pending': '<span class="status-badge pending">대기중</span>',
+                'processing': '<span class="status-badge processing">처리중</span>',
+                'shipped': '<span class="status-badge shipped">배송됨</span>',
+                'delivered': '<span class="status-badge delivered">배송완료</span>',
+                'cancelled': '<span class="status-badge cancelled">취소됨</span>'
+            };
+            return statusMap[status] || status;
+        }
+
+        function orderActionsFormatter(value, row) {
+            let actions = `
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-primary" onclick="viewOrder('${row.orderId}')" title="상세보기">
+                        <i class="fas fa-eye"></i>
+                    </button>
+            `;
+            
+            if (row.status === 'pending') {
+                actions += `
+                    <button class="btn btn-sm btn-success" onclick="processOrder('${row.orderId}')" title="처리">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="cancelOrder('${row.orderId}')" title="취소">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+            } else if (row.status === 'processing') {
+                actions += `
+                    <button class="btn btn-sm btn-warning" onclick="shipOrder('${row.orderId}')" title="배송">
+                        <i class="fas fa-truck"></i>
+                    </button>
+                `;
+            } else if (row.status === 'shipped') {
+                actions += `
+                    <button class="btn btn-sm btn-info" onclick="completeOrder('${row.orderId}')" title="완료">
+                        <i class="fas fa-check"></i>
+                    </button>
+                `;
+            }
+            
+            actions += `
+                    <button class="btn btn-sm btn-secondary" onclick="editOrder('${row.orderId}')" title="수정">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            `;
+            
+            return actions;
+        }
+
+        // Action functions
+        function viewOrder(id) {
+            console.log('View order:', id);
+            // Implement view functionality
+        }
+
+        function processOrder(id) {
+            if (confirm('이 주문을 처리하시겠습니까?')) {
+                console.log('Process order:', id);
+                // Implement process functionality
+            }
+        }
+
+        function shipOrder(id) {
+            console.log('Ship order:', id);
+            // Implement ship functionality
+        }
+
+        function completeOrder(id) {
+            if (confirm('이 주문을 완료 처리하시겠습니까?')) {
+                console.log('Complete order:', id);
+                // Implement complete functionality
+            }
+        }
+
+        function cancelOrder(id) {
+            const reason = prompt('취소 사유를 입력하세요:');
+            if (reason !== null) {
+                console.log('Cancel order:', id, 'Reason:', reason);
+                // Implement cancel functionality
+            }
+        }
+
+        function editOrder(id) {
+            console.log('Edit order:', id);
+            // Implement edit functionality
+        }
+
+        // Process orders
+        document.getElementById('processOrders').addEventListener('click', function() {
+            console.log('Processing orders...');
+            
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 처리 중...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-cog"></i> 주문 처리';
+                this.disabled = false;
+                
+                if (window.plusMoreAdmin) {
+                    window.plusMoreAdmin.showNotification('주문 처리가 완료되었습니다.', 'success');
+                }
+            }, 3000);
+        });
+
+        // Bulk ship
+        document.getElementById('bulkShip').addEventListener('click', function() {
+            if (confirm('선택된 주문들을 모두 배송 처리하시겠습니까?')) {
+                console.log('Bulk shipping orders...');
+                
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 배송 처리 중...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-truck"></i> 일괄 배송';
+                    this.disabled = false;
+                    
+                    if (window.plusMoreAdmin) {
+                        window.plusMoreAdmin.showNotification('일괄 배송 처리가 완료되었습니다.', 'success');
+                    }
+                }, 2000);
+            }
+        });
+
+        // Export orders
+        document.getElementById('exportOrders').addEventListener('click', function() {
+            console.log('Exporting orders...');
+            
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 내보내기 중...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-download"></i> 내보내기';
+                this.disabled = false;
+                
+                if (window.plusMoreAdmin) {
+                    window.plusMoreAdmin.showNotification('주문 데이터가 내보내기되었습니다.', 'success');
+                }
+            }, 2000);
+        });
+
+        // Refresh orders
+        document.getElementById('refreshOrders').addEventListener('click', function() {
+            console.log('Refreshing orders...');
+            
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 새로고침 중...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-sync-alt"></i> 새로고침';
+                this.disabled = false;
+                
+                if (window.plusMoreAdmin) {
+                    window.plusMoreAdmin.showNotification('주문 목록이 새로고침되었습니다.', 'info');
+                }
+            }, 1500);
+        });
+
+        // Print orders
+        document.getElementById('printOrders').addEventListener('click', function() {
+            window.print();
+        });
+
+        // Filter functionality
+        document.getElementById('applyFilters').addEventListener('click', function() {
+            const status = document.getElementById('orderStatus').value;
+            const channel = document.getElementById('salesChannel').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            
+            // Apply filters to the data table
+            console.log('Applying filters:', { status, channel, dateFrom, dateTo });
+        });
+
+        document.getElementById('resetFilters').addEventListener('click', function() {
+            document.getElementById('orderStatus').value = '';
+            document.getElementById('salesChannel').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            
+            // Reset data table
+            console.log('Resetting filters');
+        });
+    </script>
+</body>
+</html> 

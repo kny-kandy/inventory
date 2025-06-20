@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlusMore Admin - 매칭 관리</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>PlusMore Admin</h2>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>대시보드</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>발주 내역</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="product-list.html" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        <span>상품목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-request.html" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>발주 요청</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-orders.html" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>발주목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="sales-collection.html" class="nav-link">
+                        <i class="fas fa-store"></i>
+                        <span>판매처 주문수집</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="order-list.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>주문목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="invoice-reply.html" class="nav-link">
+                        <i class="fas fa-reply"></i>
+                        <span>송장번호 회신</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="matching-manager.html" class="nav-link">
+                        <i class="fas fa-link"></i>
+                        <span>매칭 관리</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="stock-list.html" class="nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>재고목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="location-manager.html" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>로케이션 관리</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>매칭 관리</h1>
+                    <nav class="breadcrumb"></nav>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name">관리자</span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+            <div class="page-content">
+                <div class="action-bar">
+                    <button class="btn btn-primary" id="autoMatch">
+                        <i class="fas fa-magic"></i> 자동 매칭
+                    </button>
+                    <button class="btn btn-secondary" id="manualMatch">
+                        <i class="fas fa-hand-pointer"></i> 수동 매칭
+                    </button>
+                </div>
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label for="matchStatus">매칭 상태</label>
+                        <select id="matchStatus" class="form-control">
+                            <option value="">전체</option>
+                            <option value="matched">매칭됨</option>
+                            <option value="unmatched">미매칭</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="dateFrom">시작일</label>
+                        <input type="date" id="dateFrom" class="form-control">
+                    </div>
+                    <div class="filter-group">
+                        <label for="dateTo">종료일</label>
+                        <input type="date" id="dateTo" class="form-control">
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="applyFilters">
+                            <i class="fas fa-search"></i> 검색
+                        </button>
+                        <button class="btn btn-secondary" id="resetFilters">
+                            <i class="fas fa-undo"></i> 초기화
+                        </button>
+                    </div>
+                </div>
+                <div class="data-table-section">
+                    <div class="table-header">
+                        <h3>매칭 목록</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" id="refreshMatches">
+                                <i class="fas fa-sync-alt"></i> 새로고침
+                            </button>
+                        </div>
+                    </div>
+                    <div id="matchingTable" data-component="DataTable" data-config='{
+                        "columns": [
+                            {"key": "id", "label": "ID", "sortable": true},
+                            {"key": "type", "label": "유형", "sortable": true},
+                            {"key": "source", "label": "원본", "sortable": true},
+                            {"key": "target", "label": "대상", "sortable": true},
+                            {"key": "status", "label": "상태", "sortable": true, "formatter": "matchStatusFormatter"},
+                            {"key": "actions", "label": "작업", "sortable": false, "formatter": "matchActionsFormatter"}
+                        ],
+                        "data": [
+                            {"id": "M001", "type": "상품", "source": "스마트폰 A", "target": "Smartphone A", "status": "matched"},
+                            {"id": "M002", "type": "주문", "source": "ORD-2024-001", "target": "Order #12345", "status": "unmatched"},
+                            {"id": "M003", "type": "상품", "source": "노트북 B", "target": "Laptop B", "status": "matched"}
+                        ],
+                        "pageSize": 10,
+                        "searchable": true
+                    }'></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../js/main.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/components.js"></script>
+    <script>
+        function matchStatusFormatter(status) {
+            const statusMap = {
+                'matched': '<span class="status-badge matched">매칭됨</span>',
+                'unmatched': '<span class="status-badge unmatched">미매칭</span>'
+            };
+            return statusMap[status] || status;
+        }
+        function matchActionsFormatter(value, row) {
+            return `
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-primary" onclick="viewMatch('${row.id}')" title="상세보기">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="editMatch('${row.id}')" title="수정">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            `;
+        }
+        function viewMatch(id) {
+            console.log('View match:', id);
+        }
+        function editMatch(id) {
+            console.log('Edit match:', id);
+        }
+        document.getElementById('autoMatch').addEventListener('click', function() {
+            if (confirm('자동 매칭을 실행하시겠습니까?')) {
+                console.log('Auto matching...');
+                if (window.plusMoreAdmin) {
+                    window.plusMoreAdmin.showNotification('자동 매칭이 완료되었습니다.', 'success');
+                }
+            }
+        });
+        document.getElementById('manualMatch').addEventListener('click', function() {
+            console.log('Manual matching...');
+            if (window.plusMoreAdmin) {
+                window.plusMoreAdmin.showNotification('수동 매칭 모드가 활성화되었습니다.', 'info');
+            }
+        });
+        document.getElementById('refreshMatches').addEventListener('click', function() {
+            console.log('Refreshing matches...');
+        });
+        document.getElementById('applyFilters').addEventListener('click', function() {
+            const status = document.getElementById('matchStatus').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            console.log('Applying filters:', { status, dateFrom, dateTo });
+        });
+        document.getElementById('resetFilters').addEventListener('click', function() {
+            document.getElementById('matchStatus').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            console.log('Resetting filters');
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlusMore Admin - 재고목록</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>PlusMore Admin</h2>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>대시보드</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>발주 내역</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="product-list.html" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        <span>상품목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-request.html" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>발주 요청</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-orders.html" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>발주목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="sales-collection.html" class="nav-link">
+                        <i class="fas fa-store"></i>
+                        <span>판매처 주문수집</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="order-list.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>주문목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="invoice-reply.html" class="nav-link">
+                        <i class="fas fa-reply"></i>
+                        <span>송장번호 회신</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="matching-manager.html" class="nav-link">
+                        <i class="fas fa-link"></i>
+                        <span>매칭 관리</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="stock-list.html" class="nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>재고목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="location-manager.html" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>로케이션 관리</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>재고목록</h1>
+                    <nav class="breadcrumb"></nav>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name">관리자</span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+            <div class="page-content">
+                <div class="action-bar">
+                    <button class="btn btn-primary" id="addStock">
+                        <i class="fas fa-plus"></i> 재고 추가
+                    </button>
+                    <button class="btn btn-secondary" id="exportStock">
+                        <i class="fas fa-download"></i> 내보내기
+                    </button>
+                </div>
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label for="categoryFilter">카테고리</label>
+                        <select id="categoryFilter" class="form-control">
+                            <option value="">전체</option>
+                            <option value="electronics">전자제품</option>
+                            <option value="clothing">의류</option>
+                            <option value="books">도서</option>
+                            <option value="home">홈&가든</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="statusFilter">상태</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">전체</option>
+                            <option value="in_stock">입고</option>
+                            <option value="out_of_stock">품절</option>
+                            <option value="reserved">예약</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="supplierFilter">공급업체</label>
+                        <select id="supplierFilter" class="form-control">
+                            <option value="">전체</option>
+                            <option value="supplier1">공급업체 A</option>
+                            <option value="supplier2">공급업체 B</option>
+                            <option value="supplier3">공급업체 C</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="applyFilters">
+                            <i class="fas fa-search"></i> 검색
+                        </button>
+                        <button class="btn btn-secondary" id="resetFilters">
+                            <i class="fas fa-undo"></i> 초기화
+                        </button>
+                    </div>
+                </div>
+                <div class="data-table-section">
+                    <div class="table-header">
+                        <h3>재고 목록</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" id="refreshStock">
+                                <i class="fas fa-sync-alt"></i> 새로고침
+                            </button>
+                        </div>
+                    </div>
+                    <div id="stockTable" data-component="DataTable" data-config='{
+                        "columns": [
+                            {"key": "id", "label": "재고 ID", "sortable": true},
+                            {"key": "product", "label": "상품명", "sortable": true},
+                            {"key": "category", "label": "카테고리", "sortable": true},
+                            {"key": "supplier", "label": "공급업체", "sortable": true},
+                            {"key": "quantity", "label": "수량", "sortable": true},
+                            {"key": "status", "label": "상태", "sortable": true, "formatter": "stockStatusFormatter"},
+                            {"key": "location", "label": "로케이션", "sortable": true},
+                            {"key": "actions", "label": "작업", "sortable": false, "formatter": "stockActionsFormatter"}
+                        ],
+                        "data": [
+                            {"id": "S001", "product": "스마트폰 A", "category": "전자제품", "supplier": "공급업체 A", "quantity": 50, "status": "in_stock", "location": "A-01"},
+                            {"id": "S002", "product": "노트북 B", "category": "전자제품", "supplier": "공급업체 B", "quantity": 0, "status": "out_of_stock", "location": "B-02"},
+                            {"id": "S003", "product": "티셔츠 C", "category": "의류", "supplier": "공급업체 C", "quantity": 20, "status": "reserved", "location": "C-03"}
+                        ],
+                        "pageSize": 10,
+                        "searchable": true
+                    }'></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../js/main.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/components.js"></script>
+    <script>
+        function stockStatusFormatter(status) {
+            const statusMap = {
+                'in_stock': '<span class="status-badge in-stock">입고</span>',
+                'out_of_stock': '<span class="status-badge out-of-stock">품절</span>',
+                'reserved': '<span class="status-badge reserved">예약</span>'
+            };
+            return statusMap[status] || status;
+        }
+        function stockActionsFormatter(value, row) {
+            return `
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-primary" onclick="viewStock('${row.id}')" title="상세보기">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="editStock('${row.id}')" title="수정">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            `;
+        }
+        function viewStock(id) {
+            console.log('View stock:', id);
+        }
+        function editStock(id) {
+            console.log('Edit stock:', id);
+        }
+        document.getElementById('addStock').addEventListener('click', function() {
+            console.log('Add new stock');
+        });
+        document.getElementById('exportStock').addEventListener('click', function() {
+            console.log('Exporting stock...');
+        });
+        document.getElementById('refreshStock').addEventListener('click', function() {
+            console.log('Refreshing stock...');
+        });
+        document.getElementById('applyFilters').addEventListener('click', function() {
+            const category = document.getElementById('categoryFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const supplier = document.getElementById('supplierFilter').value;
+            console.log('Applying filters:', { category, status, supplier });
+        });
+        document.getElementById('resetFilters').addEventListener('click', function() {
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('supplierFilter').value = '';
+            console.log('Resetting filters');
+        });
+    </script>
+</body>
+</html> 

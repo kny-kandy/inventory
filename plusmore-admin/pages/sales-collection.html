@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlusMore Admin - 판매처 주문수집</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>PlusMore Admin</h2>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>대시보드</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>발주 내역</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="product-list.html" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        <span>상품목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-request.html" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>발주 요청</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-orders.html" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>발주목록</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="sales-collection.html" class="nav-link">
+                        <i class="fas fa-store"></i>
+                        <span>판매처 주문수집</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="order-list.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>주문목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="invoice-reply.html" class="nav-link">
+                        <i class="fas fa-reply"></i>
+                        <span>송장번호 회신</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="matching-manager.html" class="nav-link">
+                        <i class="fas fa-link"></i>
+                        <span>매칭 관리</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="stock-list.html" class="nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>재고목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="location-manager.html" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>로케이션 관리</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>판매처 주문수집</h1>
+                    <nav class="breadcrumb"></nav>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name">관리자</span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Connection Status -->
+                <div class="connection-status">
+                    <div class="status-card">
+                        <div class="status-header">
+                            <h3>연결 상태</h3>
+                            <button class="btn btn-primary" id="refreshConnections">
+                                <i class="fas fa-sync-alt"></i> 새로고침
+                            </button>
+                        </div>
+                        <div class="status-grid">
+                            <div class="status-item connected">
+                                <i class="fas fa-check-circle"></i>
+                                <span>쿠팡</span>
+                                <small>마지막 수집: 5분 전</small>
+                            </div>
+                            <div class="status-item connected">
+                                <i class="fas fa-check-circle"></i>
+                                <span>11번가</span>
+                                <small>마지막 수집: 3분 전</small>
+                            </div>
+                            <div class="status-item connected">
+                                <i class="fas fa-check-circle"></i>
+                                <span>G마켓</span>
+                                <small>마지막 수집: 7분 전</small>
+                            </div>
+                            <div class="status-item disconnected">
+                                <i class="fas fa-times-circle"></i>
+                                <span>옥션</span>
+                                <small>연결 오류</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collection Controls -->
+                <div class="collection-controls">
+                    <div class="control-card">
+                        <h3>수집 설정</h3>
+                        <div class="control-group">
+                            <label for="autoCollection">자동 수집</label>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="autoCollection" checked>
+                                <label for="autoCollection"></label>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label for="collectionInterval">수집 간격</label>
+                            <select id="collectionInterval" class="form-control">
+                                <option value="5">5분</option>
+                                <option value="10" selected>10분</option>
+                                <option value="15">15분</option>
+                                <option value="30">30분</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="salesChannels">수집할 판매처</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="coupang" checked>
+                                    <span>쿠팡</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="11st" checked>
+                                    <span>11번가</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="gmarket" checked>
+                                    <span>G마켓</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" value="auction">
+                                    <span>옥션</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="control-actions">
+                            <button class="btn btn-primary" id="startCollection">
+                                <i class="fas fa-play"></i> 수집 시작
+                            </button>
+                            <button class="btn btn-secondary" id="stopCollection">
+                                <i class="fas fa-stop"></i> 수집 중지
+                            </button>
+                            <button class="btn btn-info" id="manualCollection">
+                                <i class="fas fa-download"></i> 수동 수집
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>오늘 수집된 주문</h3>
+                            <p class="stat-number">234</p>
+                            <span class="stat-change positive">+18.5%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>대기중인 주문</h3>
+                            <p class="stat-number">45</p>
+                            <span class="stat-change negative">+12.3%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>처리된 주문</h3>
+                            <p class="stat-number">189</p>
+                            <span class="stat-change positive">+15.7%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>오류 발생</h3>
+                            <p class="stat-number">3</p>
+                            <span class="stat-change negative">+1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Collections -->
+                <div class="recent-collections">
+                    <div class="section-header">
+                        <h3>최근 수집 내역</h3>
+                        <button class="btn btn-secondary" id="viewAllCollections">
+                            전체보기
+                        </button>
+                    </div>
+                    
+                    <div class="collection-list">
+                        <div class="collection-item">
+                            <div class="collection-info">
+                                <div class="channel-info">
+                                    <i class="fas fa-shopping-bag"></i>
+                                    <span>쿠팡</span>
+                                </div>
+                                <div class="order-count">
+                                    <span class="count">15</span>
+                                    <small>새 주문</small>
+                                </div>
+                                <div class="collection-time">
+                                    <span>2분 전</span>
+                                </div>
+                            </div>
+                            <div class="collection-status success">
+                                <i class="fas fa-check"></i>
+                                <span>성공</span>
+                            </div>
+                        </div>
+                        
+                        <div class="collection-item">
+                            <div class="collection-info">
+                                <div class="channel-info">
+                                    <i class="fas fa-store"></i>
+                                    <span>11번가</span>
+                                </div>
+                                <div class="order-count">
+                                    <span class="count">8</span>
+                                    <small>새 주문</small>
+                                </div>
+                                <div class="collection-time">
+                                    <span>5분 전</span>
+                                </div>
+                            </div>
+                            <div class="collection-status success">
+                                <i class="fas fa-check"></i>
+                                <span>성공</span>
+                            </div>
+                        </div>
+                        
+                        <div class="collection-item">
+                            <div class="collection-info">
+                                <div class="channel-info">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>G마켓</span>
+                                </div>
+                                <div class="order-count">
+                                    <span class="count">12</span>
+                                    <small>새 주문</small>
+                                </div>
+                                <div class="collection-time">
+                                    <span>7분 전</span>
+                                </div>
+                            </div>
+                            <div class="collection-status success">
+                                <i class="fas fa-check"></i>
+                                <span>성공</span>
+                            </div>
+                        </div>
+                        
+                        <div class="collection-item">
+                            <div class="collection-info">
+                                <div class="channel-info">
+                                    <i class="fas fa-gavel"></i>
+                                    <span>옥션</span>
+                                </div>
+                                <div class="order-count">
+                                    <span class="count">0</span>
+                                    <small>새 주문</small>
+                                </div>
+                                <div class="collection-time">
+                                    <span>10분 전</span>
+                                </div>
+                            </div>
+                            <div class="collection-status error">
+                                <i class="fas fa-times"></i>
+                                <span>오류</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Log -->
+                <div class="error-log">
+                    <div class="section-header">
+                        <h3>오류 로그</h3>
+                        <button class="btn btn-secondary" id="clearErrors">
+                            로그 지우기
+                        </button>
+                    </div>
+                    
+                    <div class="error-list">
+                        <div class="error-item">
+                            <div class="error-time">2024-01-20 14:30:25</div>
+                            <div class="error-message">옥션 API 연결 실패: 인증 토큰 만료</div>
+                            <div class="error-actions">
+                                <button class="btn btn-sm btn-primary">재시도</button>
+                                <button class="btn btn-sm btn-secondary">설정</button>
+                            </div>
+                        </div>
+                        
+                        <div class="error-item">
+                            <div class="error-time">2024-01-20 14:25:10</div>
+                            <div class="error-message">G마켓 주문 파싱 오류: 잘못된 JSON 형식</div>
+                            <div class="error-actions">
+                                <button class="btn btn-sm btn-primary">재시도</button>
+                                <button class="btn btn-sm btn-secondary">설정</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/components.js"></script>
+    <script>
+        // Collection control functionality
+        document.getElementById('startCollection').addEventListener('click', function() {
+            console.log('Starting collection...');
+            this.disabled = true;
+            document.getElementById('stopCollection').disabled = false;
+            
+            if (window.plusMoreAdmin) {
+                window.plusMoreAdmin.showNotification('주문 수집이 시작되었습니다.', 'success');
+            }
+        });
+
+        document.getElementById('stopCollection').addEventListener('click', function() {
+            console.log('Stopping collection...');
+            this.disabled = true;
+            document.getElementById('startCollection').disabled = false;
+            
+            if (window.plusMoreAdmin) {
+                window.plusMoreAdmin.showNotification('주문 수집이 중지되었습니다.', 'info');
+            }
+        });
+
+        document.getElementById('manualCollection').addEventListener('click', function() {
+            console.log('Manual collection...');
+            
+            // Show loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 수집 중...';
+            this.disabled = true;
+            
+            // Simulate collection process
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-download"></i> 수동 수집';
+                this.disabled = false;
+                
+                if (window.plusMoreAdmin) {
+                    window.plusMoreAdmin.showNotification('수동 수집이 완료되었습니다.', 'success');
+                }
+            }, 3000);
+        });
+
+        // Refresh connections
+        document.getElementById('refreshConnections').addEventListener('click', function() {
+            console.log('Refreshing connections...');
+            
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 새로고침 중...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-sync-alt"></i> 새로고침';
+                this.disabled = false;
+                
+                if (window.plusMoreAdmin) {
+                    window.plusMoreAdmin.showNotification('연결 상태가 업데이트되었습니다.', 'info');
+                }
+            }, 2000);
+        });
+
+        // Auto collection toggle
+        document.getElementById('autoCollection').addEventListener('change', function() {
+            console.log('Auto collection:', this.checked);
+            
+            if (window.plusMoreAdmin) {
+                const message = this.checked ? '자동 수집이 활성화되었습니다.' : '자동 수집이 비활성화되었습니다.';
+                window.plusMoreAdmin.showNotification(message, 'info');
+            }
+        });
+
+        // Collection interval change
+        document.getElementById('collectionInterval').addEventListener('change', function() {
+            console.log('Collection interval:', this.value);
+            
+            if (window.plusMoreAdmin) {
+                window.plusMoreAdmin.showNotification(`수집 간격이 ${this.value}분으로 변경되었습니다.`, 'info');
+            }
+        });
+
+        // View all collections
+        document.getElementById('viewAllCollections').addEventListener('click', function() {
+            console.log('View all collections');
+            // Navigate to detailed collection history
+        });
+
+        // Clear errors
+        document.getElementById('clearErrors').addEventListener('click', function() {
+            if (confirm('모든 오류 로그를 지우시겠습니까?')) {
+                document.querySelector('.error-list').innerHTML = '';
+                
+                if (window.plusMoreAdmin) {
+                    window.plusMoreAdmin.showNotification('오류 로그가 지워졌습니다.', 'info');
+                }
+            }
+        });
+
+        // Error retry functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.textContent === '재시도') {
+                console.log('Retrying error...');
+                e.target.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 재시도 중...';
+                e.target.disabled = true;
+                
+                setTimeout(() => {
+                    e.target.innerHTML = '재시도';
+                    e.target.disabled = false;
+                    
+                    if (window.plusMoreAdmin) {
+                        window.plusMoreAdmin.showNotification('재시도가 완료되었습니다.', 'success');
+                    }
+                }, 2000);
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial states
+            document.getElementById('stopCollection').disabled = true;
+            
+            // Start auto collection if enabled
+            if (document.getElementById('autoCollection').checked) {
+                console.log('Auto collection is enabled');
+            }
+        });
+    </script>
+</body>
+</html> 

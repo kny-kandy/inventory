@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlusMore Admin - 로케이션 관리</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>PlusMore Admin</h2>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>대시보드</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-history.html" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>발주 내역</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="product-list.html" class="nav-link">
+                        <i class="fas fa-box"></i>
+                        <span>상품목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-request.html" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>발주 요청</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="purchase-orders.html" class="nav-link">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>발주목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="sales-collection.html" class="nav-link">
+                        <i class="fas fa-store"></i>
+                        <span>판매처 주문수집</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="order-list.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>주문목록</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="invoice-reply.html" class="nav-link">
+                        <i class="fas fa-reply"></i>
+                        <span>송장번호 회신</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="matching-manager.html" class="nav-link">
+                        <i class="fas fa-link"></i>
+                        <span>매칭 관리</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="stock-list.html" class="nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>재고목록</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="location-manager.html" class="nav-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>로케이션 관리</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>로케이션 관리</h1>
+                    <nav class="breadcrumb"></nav>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name">관리자</span>
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                </div>
+            </header>
+            <div class="page-content">
+                <div class="action-bar">
+                    <button class="btn btn-primary" id="addLocation">
+                        <i class="fas fa-plus"></i> 로케이션 추가
+                    </button>
+                    <button class="btn btn-secondary" id="exportLocations">
+                        <i class="fas fa-download"></i> 내보내기
+                    </button>
+                </div>
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label for="typeFilter">유형</label>
+                        <select id="typeFilter" class="form-control">
+                            <option value="">전체</option>
+                            <option value="warehouse">창고</option>
+                            <option value="shelf">선반</option>
+                            <option value="bin">빈</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="statusFilter">상태</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">전체</option>
+                            <option value="active">활성</option>
+                            <option value="inactive">비활성</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="applyFilters">
+                            <i class="fas fa-search"></i> 검색
+                        </button>
+                        <button class="btn btn-secondary" id="resetFilters">
+                            <i class="fas fa-undo"></i> 초기화
+                        </button>
+                    </div>
+                </div>
+                <div class="data-table-section">
+                    <div class="table-header">
+                        <h3>로케이션 목록</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" id="refreshLocations">
+                                <i class="fas fa-sync-alt"></i> 새로고침
+                            </button>
+                        </div>
+                    </div>
+                    <div id="locationTable" data-component="DataTable" data-config='{
+                        "columns": [
+                            {"key": "id", "label": "로케이션 ID", "sortable": true},
+                            {"key": "name", "label": "이름", "sortable": true},
+                            {"key": "type", "label": "유형", "sortable": true},
+                            {"key": "status", "label": "상태", "sortable": true, "formatter": "locationStatusFormatter"},
+                            {"key": "capacity", "label": "수용량", "sortable": true},
+                            {"key": "actions", "label": "작업", "sortable": false, "formatter": "locationActionsFormatter"}
+                        ],
+                        "data": [
+                            {"id": "L001", "name": "창고 1", "type": "warehouse", "status": "active", "capacity": 1000},
+                            {"id": "L002", "name": "선반 1", "type": "shelf", "status": "active", "capacity": 200},
+                            {"id": "L003", "name": "빈 1", "type": "bin", "status": "inactive", "capacity": 50}
+                        ],
+                        "pageSize": 10,
+                        "searchable": true
+                    }'></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../js/main.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/components.js"></script>
+    <script>
+        function locationStatusFormatter(status) {
+            const statusMap = {
+                'active': '<span class="status-badge active">활성</span>',
+                'inactive': '<span class="status-badge inactive">비활성</span>'
+            };
+            return statusMap[status] || status;
+        }
+        function locationActionsFormatter(value, row) {
+            return `
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-primary" onclick="viewLocation('${row.id}')" title="상세보기">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-secondary" onclick="editLocation('${row.id}')" title="수정">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            `;
+        }
+        function viewLocation(id) {
+            console.log('View location:', id);
+        }
+        function editLocation(id) {
+            console.log('Edit location:', id);
+        }
+        document.getElementById('addLocation').addEventListener('click', function() {
+            console.log('Add new location');
+        });
+        document.getElementById('exportLocations').addEventListener('click', function() {
+            console.log('Exporting locations...');
+        });
+        document.getElementById('refreshLocations').addEventListener('click', function() {
+            console.log('Refreshing locations...');
+        });
+        document.getElementById('applyFilters').addEventListener('click', function() {
+            const type = document.getElementById('typeFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            console.log('Applying filters:', { type, status });
+        });
+        document.getElementById('resetFilters').addEventListener('click', function() {
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            console.log('Resetting filters');
+        });
+    </script>
+</body>
+</html> 
