@@ -3,244 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlusMore Admin - 발주 내역</title>
+    <title>PlusMore - 발주 내역</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/responsive.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="admin-container">
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h2>PlusMore Admin</h2>
-                <button class="sidebar-toggle" id="sidebarToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">P</div>
+                plusmore
+            </a>
             
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="../index.html" class="nav-link">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <span>대시보드</span>
-                    </a>
-                </li>
-                <li class="nav-item active">
-                    <a href="purchase-history.html" class="nav-link">
-                        <i class="fas fa-history"></i>
-                        <span>발주 내역</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="product-list.html" class="nav-link">
-                        <i class="fas fa-box"></i>
-                        <span>상품목록</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="purchase-request.html" class="nav-link">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>발주 요청</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="purchase-orders.html" class="nav-link">
-                        <i class="fas fa-clipboard-list"></i>
-                        <span>발주목록</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="sales-collection.html" class="nav-link">
-                        <i class="fas fa-store"></i>
-                        <span>판매처 주문수집</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="order-list.html" class="nav-link">
-                        <i class="fas fa-list"></i>
-                        <span>주문목록</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="invoice-reply.html" class="nav-link">
-                        <i class="fas fa-reply"></i>
-                        <span>송장번호 회신</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="matching-manager.html" class="nav-link">
-                        <i class="fas fa-link"></i>
-                        <span>매칭 관리</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="stock-list.html" class="nav-link">
-                        <i class="fas fa-warehouse"></i>
-                        <span>재고목록</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="location-manager.html" class="nav-link">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>로케이션 관리</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item">로그제출</a>
+                <a href="product-list.html" class="nav-item">상품관리</a>
+                <a href="#" class="nav-item">배송관리</a>
+                <a href="stock-list.html" class="nav-item">재고관리</a>
+                <a href="#" class="nav-item">CS관리</a>
+                <a href="#" class="nav-item">직업/업무관리</a>
+                <a href="#" class="nav-item">통계</a>
+                <a href="#" class="nav-item">정산</a>
+                <a href="#" class="nav-item">환경설정</a>
+            </nav>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <header class="top-header">
-                <div class="header-left">
-                    <h1>발주 내역</h1>
-                </div>
-                <div class="header-right">
-                    <div class="user-info">
-                        <span class="user-name">관리자</span>
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                </div>
-            </header>
-
-            <div class="content-wrapper">
-                <!-- Filters -->
-                <div class="filters-section">
-                    <div class="filter-group">
-                        <label for="dateRange">기간</label>
-                        <select id="dateRange" class="form-select">
-                            <option value="today">오늘</option>
-                            <option value="week">이번 주</option>
-                            <option value="month" selected>이번 달</option>
-                            <option value="quarter">이번 분기</option>
-                            <option value="year">올해</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label for="statusFilter">상태</label>
-                        <select id="statusFilter" class="form-select">
-                            <option value="">전체</option>
-                            <option value="pending">대기중</option>
-                            <option value="processing">처리중</option>
-                            <option value="completed">완료</option>
-                            <option value="cancelled">취소</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label for="searchInput">검색</label>
-                        <input type="text" id="searchInput" class="form-input" placeholder="상품명, 주문번호 검색...">
-                    </div>
-                    
-                    <button class="btn btn-primary" onclick="applyFilters()">
-                        <i class="fas fa-search"></i> 검색
-                    </button>
-                </div>
-
-                <!-- Data Table -->
-                <div class="data-table-container">
-                    <div class="table-header">
-                        <h3>발주 내역 목록</h3>
-                        <div class="table-actions">
-                            <button class="btn btn-secondary" onclick="exportData()">
-                                <i class="fas fa-download"></i> 내보내기
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>주문번호</th>
-                                    <th>상품명</th>
-                                    <th>수량</th>
-                                    <th>주문일</th>
-                                    <th>상태</th>
-                                    <th>처리일</th>
-                                    <th>액션</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>#12345</td>
-                                    <td>프리미엄 상품 A</td>
-                                    <td>10</td>
-                                    <td>2024-06-15</td>
-                                    <td><span class="status-badge completed">완료</span></td>
-                                    <td>2024-06-16</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline" onclick="viewDetails('12345')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>#12346</td>
-                                    <td>베스트 상품 B</td>
-                                    <td>5</td>
-                                    <td>2024-06-14</td>
-                                    <td><span class="status-badge processing">처리중</span></td>
-                                    <td>-</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline" onclick="viewDetails('12346')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>#12347</td>
-                                    <td>신상품 C</td>
-                                    <td>15</td>
-                                    <td>2024-06-13</td>
-                                    <td><span class="status-badge pending">대기중</span></td>
-                                    <td>-</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline" onclick="viewDetails('12347')">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <!-- Pagination -->
-                    <div class="pagination">
-                        <button class="pagination-btn" disabled>
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="pagination-btn active">1</button>
-                        <button class="pagination-btn">2</button>
-                        <button class="pagination-btn">3</button>
-                        <button class="pagination-btn">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
+            <div class="user-section">
+                <button class="icon-btn">📄</button>
+                <button class="icon-btn">✉️</button>
+                <div class="user-info">
+                    <div class="user-avatar">김</div>
+                    <span>김성빈</span>
+                    <span>▼</span>
                 </div>
             </div>
-        </main>
-    </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="container">
+        <h1 class="page-title">
+            발주 내역
+            <div class="help-icon">?</div>
+        </h1>
+
+        <!-- 검색 섹션 -->
+        <div class="search-section">
+            <div class="search-row">
+                <label class="search-label">기간</label>
+                <select class="search-select">
+                    <option value="today">오늘</option>
+                    <option value="week">이번 주</option>
+                    <option value="month" selected>이번 달</option>
+                    <option value="quarter">이번 분기</option>
+                    <option value="year">올해</option>
+                </select>
+                
+                <label class="search-label">상태</label>
+                <select class="search-select">
+                    <option value="">전체</option>
+                    <option value="pending">대기중</option>
+                    <option value="processing">처리중</option>
+                    <option value="completed">완료</option>
+                    <option value="cancelled">취소</option>
+                </select>
+                
+                <label class="search-label">검색</label>
+                <input type="text" class="search-input" placeholder="상품명, 주문번호 검색...">
+                
+                <button class="search-btn">검색</button>
+            </div>
+        </div>
+
+        <!-- 상태 카드들 -->
+        <div class="status-cards">
+            <div class="status-card">
+                <div class="status-card-title">입고대기</div>
+                <div class="status-card-value">0건 / 0</div>
+            </div>
+            <div class="status-card active">
+                <div class="status-card-title">신규주문</div>
+                <div class="status-card-value">0건 / 0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-card-title">발주확인</div>
+                <div class="status-card-value">0건 / 0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-card-title">구매완료</div>
+                <div class="status-card-value">0건 / 0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-card-title">현지배송중</div>
+                <div class="status-card-value">0건 / 0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-card-title">배치송</div>
+                <div class="status-card-value">0건 / 0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-card-title">선적대기</div>
+                <div class="status-card-value">0건 / 0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-card-title">국내배송중</div>
+                <div class="status-card-value">0건 / 0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-card-title">가태원료</div>
+                <div class="status-card-value">0건 / 0</div>
+            </div>
+            <div class="status-card">
+                <div class="status-card-title">바른출</div>
+                <div class="status-card-value">0건 / 0</div>
+            </div>
+        </div>
+
+        <!-- 액션 버튼들 -->
+        <div class="action-buttons">
+            <button class="action-btn">전체선택</button>
+            <button class="action-btn">선택삭제</button>
+            <button class="action-btn primary">신규등록</button>
+            <button class="action-btn export">엑셀다운로드</button>
+        </div>
+
+        <!-- 데이터 테이블 -->
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" class="checkbox"></th>
+                        <th>주문번호</th>
+                        <th>상품명</th>
+                        <th>수량</th>
+                        <th>주문일</th>
+                        <th>상태</th>
+                        <th>처리일</th>
+                        <th>액션</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" class="checkbox"></td>
+                        <td>#12345</td>
+                        <td>프리미엄 상품 A</td>
+                        <td>10</td>
+                        <td>2024-06-15</td>
+                        <td><span class="status-badge completed">완료</span></td>
+                        <td>2024-06-16</td>
+                        <td>
+                            <button class="action-btn" onclick="viewDetails('12345')">보기</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="checkbox"></td>
+                        <td>#12346</td>
+                        <td>베스트 상품 B</td>
+                        <td>5</td>
+                        <td>2024-06-14</td>
+                        <td><span class="status-badge processing">처리중</span></td>
+                        <td>-</td>
+                        <td>
+                            <button class="action-btn" onclick="viewDetails('12346')">보기</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="checkbox"></td>
+                        <td>#12347</td>
+                        <td>신상품 C</td>
+                        <td>15</td>
+                        <td>2024-06-13</td>
+                        <td><span class="status-badge pending">대기중</span></td>
+                        <td>-</td>
+                        <td>
+                            <button class="action-btn" onclick="viewDetails('12347')">보기</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    Showing 3 rows
+                </div>
+                <div class="pagination-controls">
+                    <label>Page Size</label>
+                    <select class="page-size-select">
+                        <option value="25">25</option>
+                        <option value="50" selected>50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                    </select>
+                    <button class="page-btn" disabled>First</button>
+                    <button class="page-btn" disabled>Prev</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">Next</button>
+                    <button class="page-btn">Last</button>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script src="../js/main.js"></script>
     <script src="../js/navigation.js"></script>
     <script src="../js/components.js"></script>
     <script>
-        function applyFilters() {
-            const dateRange = document.getElementById('dateRange').value;
-            const statusFilter = document.getElementById('statusFilter').value;
-            const searchInput = document.getElementById('searchInput').value;
-            
-            console.log('Filters applied:', { dateRange, statusFilter, searchInput });
-            // 여기에 실제 필터링 로직 구현
-        }
-        
-        function exportData() {
-            console.log('Exporting data...');
-            // 여기에 데이터 내보내기 로직 구현
-        }
-        
         function viewDetails(orderId) {
             console.log('Viewing details for order:', orderId);
             // 여기에 상세보기 모달 또는 페이지 이동 로직 구현

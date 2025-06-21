@@ -1,343 +1,216 @@
-// PlusMore Admin - Navigation Management
+// 네비게이션 관리 모듈
 class NavigationManager {
     constructor() {
-        this.currentPage = this.getCurrentPage();
+        this.currentPage = '';
         this.init();
     }
 
     init() {
-        this.setupNavigation();
-        this.setupBreadcrumbs();
-        this.setupPageTransitions();
+        this.setupNavigationEvents();
+        this.updateCurrentPage();
     }
 
-    getCurrentPage() {
-        const path = window.location.pathname;
-        const page = path.split('/').pop() || 'index.html';
-        return page;
-    }
-
-    setupNavigation() {
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                // Remove active class from all nav items
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                // Add active class to clicked item
-                link.parentElement.classList.add('active');
-                
-                // Store current page in session storage
-                sessionStorage.setItem('currentPage', link.getAttribute('href'));
-            });
+    setupNavigationEvents() {
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => this.handleNavigation(e));
         });
-
-        // Restore active state on page load
-        this.restoreActiveState();
     }
 
-    restoreActiveState() {
-        const currentPage = sessionStorage.getItem('currentPage') || this.currentPage;
-        const navLinks = document.querySelectorAll('.nav-link');
+    handleNavigation(e) {
+        const clickedItem = e.target;
+        const href = clickedItem.getAttribute('href');
         
-        navLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href === currentPage || 
-                (currentPage === 'index.html' && href === 'index.html') ||
-                (currentPage.endsWith('/') && href === 'index.html')) {
-                link.parentElement.classList.add('active');
+        // 외부 링크가 아닌 경우에만 처리
+        if (href && !href.startsWith('http') && href !== '#') {
+            // 현재 페이지에서 내용만 변경하는 경우
+            if (href.startsWith('#') || this.isSamePage(href)) {
+                e.preventDefault();
+                this.loadPageContent(href);
             }
-        });
+        }
+        
+        this.updateActiveNav(clickedItem);
     }
 
-    setupBreadcrumbs() {
-        const breadcrumbContainer = document.querySelector('.breadcrumb');
-        if (!breadcrumbContainer) return;
-
-        const breadcrumbs = this.generateBreadcrumbs();
-        breadcrumbContainer.innerHTML = breadcrumbs;
+    isSamePage(href) {
+        const currentPath = window.location.pathname;
+        return currentPath.includes(href.split('/').pop().split('.')[0]);
     }
 
-    generateBreadcrumbs() {
-        const path = window.location.pathname;
-        const segments = path.split('/').filter(segment => segment);
+    loadPageContent(href) {
+        const pageName = this.getPageNameFromHref(href);
+        const pageTitle = document.querySelector('.page-title');
         
-        let breadcrumbHTML = '<a href="index.html">홈</a>';
-        let currentPath = '';
+        // 페이지 제목 업데이트
+        if (pageTitle) {
+            pageTitle.innerHTML = `${this.getDisplayName(pageName)} <div class="help-icon">?</div>`;
+        }
         
-        segments.forEach((segment, index) => {
-            currentPath += '/' + segment;
-            const isLast = index === segments.length - 1;
+        // 페이지별 컨텐츠 로드
+        this.loadPageSpecificContent(pageName);
+    }
+
+    getPageNameFromHref(href) {
+        const fileName = href.split('/').pop().split('.')[0];
+        return fileName || 'dashboard';
+    }
+
+    getDisplayName(pageName) {
+        const displayNames = {
+            'product-list': '상품목록',
+            'purchase-history': '발주 내역',
+            'purchase-request': '발주 요청',
+            'purchase-orders': '발주목록',
+            'sales-collection': '판매처 주문수집',
+            'order-list': '주문목록',
+            'invoice-reply': '송장번호 회신',
+            'matching-manager': '매칭 관리',
+            'stock-list': '재고목록',
+            'location-manager': '로케이션 관리',
+            'dashboard': '대시보드'
+        };
+        return displayNames[pageName] || pageName;
+    }
+
+    loadPageSpecificContent(pageName) {
+        // 상태 카드 업데이트
+        this.updateStatusCards(pageName);
+        
+        // 테이블 데이터 로드
+        if (window.PlusMore && window.PlusMore.loadTableData) {
+            window.PlusMore.loadTableData(pageName);
+        }
+        
+        // 페이지별 특수 기능 로드
+        this.loadPageFeatures(pageName);
+    }
+
+    updateStatusCards(pageName) {
+        const container = document.querySelector('.container');
+        let cardsHTML = '';
+        
+        // 기존 상태 카드 제거
+        const existingCards = document.querySelector('.status-cards');
+        if (existingCards) {
+            existingCards.remove();
+        }
+        
+        // 페이지별 상태 카드 생성
+        if (this.needsStatusCards(pageName)) {
+            cardsHTML = this.generateStatusCards(pageName);
             
-            if (isLast) {
-                breadcrumbHTML += ` <span class="breadcrumb-separator">/</span> <span class="breadcrumb-current">${this.getPageTitle(segment)}</span>`;
-            } else {
-                breadcrumbHTML += ` <span class="breadcrumb-separator">/</span> <a href="${currentPath}">${this.getPageTitle(segment)}</a>`;
+            if (cardsHTML) {
+                const searchSection = document.querySelector('.search-section');
+                if (searchSection) {
+                    searchSection.insertAdjacentHTML('afterend', cardsHTML);
+                }
             }
-        });
-        
-        return breadcrumbHTML;
+        }
     }
 
-    getPageTitle(pageName) {
-        const pageTitles = {
-            'index.html': '대시보드',
-            'purchase-history.html': '발주 내역',
-            'product-list.html': '상품목록',
-            'purchase-request.html': '발주 요청',
-            'purchase-orders.html': '발주목록',
-            'sales-collection.html': '판매처 주문수집',
-            'order-list.html': '주문목록',
-            'invoice-reply.html': '송장번호 회신',
-            'matching-manager.html': '매칭 관리',
-            'stock-list.html': '재고목록',
-            'location-manager.html': '로케이션 관리'
+    needsStatusCards(pageName) {
+        return ['purchase-orders', 'order-list', 'purchase-history'].includes(pageName);
+    }
+
+    generateStatusCards(pageName) {
+        const cardConfigs = {
+            'purchase-orders': [
+                { title: '입고대기', value: '0건 / 0' },
+                { title: '신규주문', value: '0건 / 0', active: true },
+                { title: '발주확인', value: '0건 / 0' },
+                { title: '구매완료', value: '0건 / 0' },
+                { title: '현지배송중', value: '0건 / 0' },
+                { title: '배치송', value: '0건 / 0' },
+                { title: '선적대기', value: '0건 / 0' },
+                { title: '국내배송중', value: '0건 / 0' },
+                { title: '가태원료', value: '0건 / 0' },
+                { title: '바른출', value: '0건 / 0' }
+            ],
+            'order-list': [
+                { title: '매칭처리', value: '0' },
+                { title: '협조처리', value: '0' },
+                { title: '취조처리', value: '0' },
+                { title: '송장처리', value: '0' },
+                { title: '출고처리', value: '0' },
+                { title: '배송중', value: '0' }
+            ]
         };
         
-        return pageTitles[pageName] || pageName;
-    }
-
-    setupPageTransitions() {
-        // Add loading state to navigation links
-        const navLinks = document.querySelectorAll('.nav-link');
+        const cards = cardConfigs[pageName] || [];
+        if (cards.length === 0) return '';
         
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                // Don't add loading for external links or same page
-                const href = link.getAttribute('href');
-                if (href.startsWith('http') || href === this.currentPage) {
-                    return;
-                }
-                
-                // Add loading state
-                this.showPageLoading();
-            });
+        let html = '<div class="status-cards">';
+        cards.forEach(card => {
+            html += `
+                <div class="status-card ${card.active ? 'active' : ''}">
+                    <div class="status-card-title">${card.title}</div>
+                    <div class="status-card-value">${card.value}</div>
+                </div>
+            `;
         });
-
-        // Hide loading when page is fully loaded
-        window.addEventListener('load', () => {
-            this.hidePageLoading();
-        });
+        html += '</div>';
+        
+        return html;
     }
 
-    showPageLoading() {
-        const loadingOverlay = document.createElement('div');
-        loadingOverlay.className = 'page-loading-overlay';
-        loadingOverlay.innerHTML = `
-            <div class="loading-spinner">
-                <div class="spinner"></div>
-                <p>페이지를 불러오는 중...</p>
-            </div>
-        `;
-        
-        document.body.appendChild(loadingOverlay);
-        
-        // Show loading with animation
-        setTimeout(() => {
-            loadingOverlay.classList.add('active');
-        }, 100);
-    }
-
-    hidePageLoading() {
-        const loadingOverlay = document.querySelector('.page-loading-overlay');
-        if (loadingOverlay) {
-            loadingOverlay.classList.remove('active');
-            setTimeout(() => {
-                if (loadingOverlay.parentNode) {
-                    loadingOverlay.remove();
-                }
-            }, 300);
+    loadPageFeatures(pageName) {
+        // 페이지별 특수 기능들
+        switch(pageName) {
+            case 'purchase-orders':
+                this.loadPurchaseOrderFeatures();
+                break;
+            case 'stock-list':
+                this.loadStockManagementFeatures();
+                break;
+            case 'product-list':
+                this.loadProductManagementFeatures();
+                break;
         }
     }
 
-    // Navigation helper methods
-    navigateTo(page, params = {}) {
-        const url = new URL(page, window.location.origin);
-        
-        // Add query parameters
-        Object.keys(params).forEach(key => {
-            url.searchParams.set(key, params[key]);
-        });
-        
-        window.location.href = url.toString();
+    loadPurchaseOrderFeatures() {
+        // 발주 관련 특수 기능들
+        console.log('발주 관리 기능 로드됨');
     }
 
-    navigateBack() {
-        if (window.history.length > 1) {
-            window.history.back();
-        } else {
-            this.navigateTo('index.html');
-        }
+    loadStockManagementFeatures() {
+        // 재고 관리 특수 기능들
+        console.log('재고 관리 기능 로드됨');
     }
 
-    // Mobile navigation methods
-    toggleMobileMenu() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.querySelector('.mobile-overlay');
-        
-        if (sidebar.classList.contains('active')) {
-            this.closeMobileMenu();
-        } else {
-            this.openMobileMenu();
-        }
+    loadProductManagementFeatures() {
+        // 상품 관리 특수 기능들
+        console.log('상품 관리 기능 로드됨');
     }
 
-    openMobileMenu() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = this.createMobileOverlay();
-        
-        sidebar.classList.add('active');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+    updateActiveNav(activeItem) {
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => item.classList.remove('active'));
+        activeItem.classList.add('active');
     }
 
-    closeMobileMenu() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.querySelector('.mobile-overlay');
+    updateCurrentPage() {
+        const path = window.location.pathname;
+        this.currentPage = this.getPageNameFromPath(path);
         
-        sidebar.classList.remove('active');
-        if (overlay) {
-            overlay.classList.remove('active');
-            setTimeout(() => {
-                if (overlay.parentNode) {
-                    overlay.remove();
-                }
-            }, 300);
-        }
-        document.body.style.overflow = '';
-    }
-
-    createMobileOverlay() {
-        let overlay = document.querySelector('.mobile-overlay');
-        
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'mobile-overlay';
-            document.body.appendChild(overlay);
-            
-            overlay.addEventListener('click', () => {
-                this.closeMobileMenu();
-            });
-        }
-        
-        return overlay;
-    }
-
-    // Keyboard navigation
-    setupKeyboardNavigation() {
-        document.addEventListener('keydown', (e) => {
-            // Alt + N: Toggle navigation
-            if (e.altKey && e.key === 'n') {
-                e.preventDefault();
-                this.toggleMobileMenu();
-            }
-            
-            // Alt + H: Go home
-            if (e.altKey && e.key === 'h') {
-                e.preventDefault();
-                this.navigateTo('index.html');
-            }
-            
-            // Alt + B: Go back
-            if (e.altKey && e.key === 'b') {
-                e.preventDefault();
-                this.navigateBack();
+        // 현재 페이지에 맞는 네비게이션 활성화
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            const href = item.getAttribute('href');
+            if (href && path.includes(href)) {
+                item.classList.add('active');
             }
         });
     }
 
-    // Search functionality
-    setupSearch() {
-        const searchInput = document.querySelector('.search-input');
-        if (!searchInput) return;
-
-        const searchResults = document.querySelector('.search-results');
-        
-        searchInput.addEventListener('input', this.debounce((e) => {
-            const query = e.target.value.trim();
-            
-            if (query.length < 2) {
-                this.hideSearchResults();
-                return;
-            }
-            
-            this.performSearch(query);
-        }, 300));
-
-        // Close search results when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!searchInput.contains(e.target) && !searchResults?.contains(e.target)) {
-                this.hideSearchResults();
-            }
-        });
-    }
-
-    async performSearch(query) {
-        try {
-            // Simulate search API call
-            const results = await this.searchAPI(query);
-            this.displaySearchResults(results);
-        } catch (error) {
-            console.error('Search failed:', error);
-        }
-    }
-
-    async searchAPI(query) {
-        // Simulate API call
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve([
-                    { title: '상품 검색 결과', url: 'pages/product-list.html?search=' + query },
-                    { title: '주문 검색 결과', url: 'pages/order-list.html?search=' + query },
-                    { title: '재고 검색 결과', url: 'pages/stock-list.html?search=' + query }
-                ]);
-            }, 500);
-        });
-    }
-
-    displaySearchResults(results) {
-        let searchResults = document.querySelector('.search-results');
-        
-        if (!searchResults) {
-            searchResults = document.createElement('div');
-            searchResults.className = 'search-results';
-            document.querySelector('.search-container').appendChild(searchResults);
-        }
-        
-        searchResults.innerHTML = results.map(result => `
-            <a href="${result.url}" class="search-result-item">
-                <i class="fas fa-search"></i>
-                <span>${result.title}</span>
-            </a>
-        `).join('');
-        
-        searchResults.classList.add('active');
-    }
-
-    hideSearchResults() {
-        const searchResults = document.querySelector('.search-results');
-        if (searchResults) {
-            searchResults.classList.remove('active');
-        }
-    }
-
-    debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
+    getPageNameFromPath(path) {
+        const fileName = path.split('/').pop().split('.')[0];
+        return fileName || 'dashboard';
     }
 }
 
-// Initialize navigation manager
+// 네비게이션 매니저 초기화
 document.addEventListener('DOMContentLoaded', () => {
     window.navigationManager = new NavigationManager();
 });
